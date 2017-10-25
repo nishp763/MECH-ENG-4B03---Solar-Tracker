@@ -1,6 +1,8 @@
+#include <Stepper.h> // Import the stepper library
+
 void setup()
 {
-  // put your setup code here, to run once:
+  Serial.begin(9600); // initialize the serial port
 
 }
 
