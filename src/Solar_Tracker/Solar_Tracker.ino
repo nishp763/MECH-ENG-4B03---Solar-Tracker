@@ -97,7 +97,7 @@ void homeAzimuth(){
       break;
       }
 
-    stepAzimuth("CCW", 10);
+    stepAzimuth("CW", 10);
     
     }
   Serial.println("Azimuth angle moved 180 degrees without reaching optical sensor.");  
