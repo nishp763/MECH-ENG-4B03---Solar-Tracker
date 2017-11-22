@@ -1,11 +1,11 @@
 #include <Wire.h>
 //Define Pins
-#define OPTOPINAZ 3 //Optical Sensor Azimuth
-#define OPTOPINZE 2 //Optical Sensor Zenith
-#define MOTZECWCCW 7 //Motor Zenith Direction
-#define MOTZECLK 6 //Motor Zenith Pulse
-#define MOTAZCWCCW 5 //Motor Azimuth Direction
-#define MOTAZCLK 4 //Motor Aziumuth Pulse
+#define OPTOPINAZ 2 //Optical Sensor Azimuth
+#define OPTOPINZE 3 //Optical Sensor Zenith
+#define MOTZECWCCW 8 //Motor Zenith Direction
+#define MOTZECLK 9 //Motor Zenith Pulse
+#define MOTAZCWCCW 7 //Motor Azimuth Direction
+#define MOTAZCLK 6 //Motor Aziumuth Pulse
 //Constants
 #define ASCIIZERO 48 // '0' = 48
 #define pi 3.1415926535897932384
@@ -61,6 +61,7 @@ struct cLocation utcLocation;
 struct cSphereCoordinates utcSunCoordinates;
 struct cSphereCoordinates utcTargetCoordinates;
 struct cSphereCoordinates utcHelioCoordinates;
+
 void setup()
 {
 // setup serial communication
@@ -86,32 +87,32 @@ Serial.print(" Longitude (Degrees): "); Serial.println(utcLocation.dLongitude);
 //setTime();
 
 // home the AZ stepper by looking for blocked opto slot, when home = East = 90 degrees = 1800 steps
-homeAzimuth();
+//homeAzimuth();
 // home the Zenith stepper
-homeZenith();
+//homeZenith();
 //Init Time
 getCurrentTime();
-setDebugMode();
+//setDebugMode();
 Mode = 1;
 } // end setup()
 void loop() {
-if (iErrorAZFlag || iErrorZEFlag) {
-Serial.println("One of the stages failed to home");
-}
-else {
-getCurrentTime();
-Tracking();
-}
-delay(ControlFrequency);
-}
-void setDebugMode(){
-Mode=1;
-ControlFrequency=DebugControlFrequency;
-utcTime.dMinutes=0;
-utcTime.dHours=0x0B;
-utcTime.dSeconds=0;
-utcTime.iDay = 0x08;
-utcTime.iMonth = 0x06;
+//if (iErrorAZFlag || iErrorZEFlag) {
+//Serial.println("One of the stages failed to home");
+//}
+//else {
+//getCurrentTime();
+//Tracking();
+//}
+//delay(ControlFrequency);
+//}
+//void setDebugMode(){
+//Mode=1;
+//ControlFrequency=DebugControlFrequency;
+//utcTime.dMinutes=0;
+//utcTime.dHours=0x0B;
+//utcTime.dSeconds=0;
+//utcTime.iDay = 0x08;
+//utcTime.iMonth = 0x06;
 }
 void setTime() {
 // set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)

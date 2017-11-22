@@ -54,7 +54,7 @@ void setup()
 	// Initialize Azimuth Stage Opto Sensor as INPUT
 	pinMode(Azimuth_Optical_Sensor, INPUT);
 	//home_azimuth();
-  setTime();
+  //setTime();
 	//move_azimuth("CCW",180);
 }
 
@@ -136,50 +136,47 @@ Wire.write(0x10); // provide 1 Hz square wave on pin 7
 Wire.endTransmission();
 }
 
-void getCurrentTime()
-{ 
- Wire.beginTransmission(0x68); 
- Wire.write(0); // point to address of the timekeeping registers 
- Wire.endTransmission(); 
- 
- Wire.requestFrom(0x68, 7); // request 7 bytes from DS1307 
- utcTime.dSeconds = convertHEX(Wire.read()); 
- utcTime.dMinutes = convertHEX(Wire.read()); 
- utcTime.dHours = convertHEX(Wire.read()); 
- Wire.read(); // disregard the day of the week 
- utcTime.iDay = convertHEX(Wire.read()); 
- utcTime.iMonth = convertHEX(Wire.read()); 
- utcTime.iYear = 2000 + convertHEX(Wire.read()); 
- 
- Serial.println(""); 
- Serial.println("Universal Coordinate Time"); 
- Serial.print("Time (Hh:Mm:Ss): "); 
- if ((int)utcTime.dHours < 10) Serial.print("0"); 
- Serial.print((int)utcTime.dHours, DEC); 
- Serial.print(":"); 
- if ((int)utcTime.dMinutes < 10) Serial.print("0"); 
- Serial.print((int)utcTime.dMinutes, DEC); 
- Serial.print(":"); 
- if (utcTime.dSeconds < 10) Serial.print("0"); 
- Serial.println((int)utcTime.dSeconds, DEC); 
- 
- Serial.print("Date (Dd/Mm/YYYY) "); 
- if (utcTime.iDay < 10) Serial.print("0"); 
- Serial.print(utcTime.iDay, DEC); 
- Serial.print("/"); 
- if (utcTime.iMonth < 10) Serial.print("0"); 
- Serial.print(utcTime.iMonth, DEC); 
- Serial.print("/"); 
- if (utcTime.iYear < 10) Serial.print("0"); 
- Serial.println(utcTime.iYear, DEC); 
- Serial.println(""); 
- 
-} // end getCurrentTime()
-
 byte convertHEX(byte value) { 
  //This works for decimal 0-99 
  return ((value/16*10) + (value%16)); 
 } // end convertHEX
+
+void getCurrentTime() 
+{
+  Serial.println("Normal Mode");
+  Wire.beginTransmission(0x68);
+  Wire.write(0); // point to address of the timekeeping registers
+  Wire.endTransmission();
+  Wire.requestFrom(0x68, 7); // request 7 bytes from DS1307
+  utcTime.dSeconds = convertHEX(Wire.read());
+  utcTime.dMinutes = convertHEX(Wire.read());
+  utcTime.dHours = convertHEX(Wire.read());
+  Wire.read(); // disregard the day of the week
+  utcTime.iDay = convertHEX(Wire.read());
+  utcTime.iMonth = convertHEX(Wire.read());
+  utcTime.iYear = 2000 + convertHEX(Wire.read());
+  Serial.println("-----------------------------------------------------");
+  Serial.println("Universal Coordinate Time");
+  Serial.print(" Time (Hh:Mm:Ss): ");
+  if ((int)utcTime.dHours < 10) Serial.print("0");
+  Serial.print((int)utcTime.dHours, DEC);
+  Serial.print(":");
+  if ((int)utcTime.dMinutes < 10) Serial.print("0");
+  Serial.print((int)utcTime.dMinutes, DEC);
+  Serial.print(":");
+  if (utcTime.dSeconds < 10) Serial.print("0");
+  Serial.println((int)utcTime.dSeconds, DEC);
+  Serial.print(" Date (Dd/Mm/YYYY) ");
+  if (utcTime.iDay < 10) Serial.print("0");
+  Serial.print(utcTime.iDay, DEC);
+  Serial.print("/");
+  if (utcTime.iMonth < 10) Serial.print("0");
+  Serial.print(utcTime.iMonth, DEC);
+  Serial.print("/");
+  if (utcTime.iYear < 10) Serial.print("0");
+  Serial.println(utcTime.iYear, DEC);
+  Serial.println("");
+} // end getCurrentTime()
 
 void GetSunPos(struct cTime utcTime, struct cLocation utcLocation, struct cSunCoordinates *utcSunCoordinates) 
 { 
