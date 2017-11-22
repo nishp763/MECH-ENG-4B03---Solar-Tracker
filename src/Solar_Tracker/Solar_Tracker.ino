@@ -217,6 +217,22 @@ void GetSunPos(struct cTime utcTime, struct cLocation utcLocation, struct cSunCo
 	} 
 } // end GetSunPos() 
 
+void setTime() {
+// set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)
+Serial.println("Set time ");
+Wire.beginTransmission(0x68);
+Wire.write(0); // point to address of the timekeeping registers
+Wire.write(0x00); // set seconds
+Wire.write(0x37); // set minutes
+Wire.write(0x80 | 0x15); // set hours 24 mode
+Wire.write(0x03); // day of week
+Wire.write(0x21); // date
+Wire.write(0x11); // month
+Wire.write(0x15); // year 00-00
+Wire.write(0x10); // provide 1 Hz square wave on pin 7
+Wire.endTransmission();
+}
+
 void getCurrentTime() { 
  
  Wire.beginTransmission(0x68); 
