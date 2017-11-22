@@ -11,7 +11,7 @@
 
 //Use decimal format (Latitude = 43 + 26.0181/60 = 43.434; Longitude = -1 * (79 degrees + 92.0892/60) = -80.535;) 
 const double MCMASTERLATITUDE = 43.434; 
-const double MCMASTERLONGITUDE = -80.535; 
+const double MCMASTERLONGITUDE = -80.535;
  
 struct cTime { 
  int iYear; 
@@ -57,11 +57,22 @@ void setup()
 	home_azimuth();
   //setTime();
 	//move_azimuth("CCW",180);
+
+  utcLocation.dLatitude = MCMASTERLATITUDE; 
+  utcLocation.dLongitude = MCMASTERLONGITUDE; 
+   
+  Serial.println("Location: McMaster University, Hamilton, ON"); 
+  Serial.print("Latitude (Decimal Format): "); 
+  Serial.println(utcLocation.dLatitude); 
+  Serial.print("Longitude (Decimal Format): "); 
+  Serial.println(utcLocation.dLongitude); 
+  Serial.println("");
 }
 
 void loop() 
 {
   getCurrentTime();
+  beginTracking();
 }
 
 void home_azimuth() // This function will place the Azimuth stage to the home position
@@ -138,7 +149,8 @@ void setTime()
   Wire.endTransmission();
 }
 
-byte convertHEX(byte value) { 
+byte convertHEX(byte value) 
+{ 
  //This works for decimal 0-99 
  return ((value/16*10) + (value%16)); 
 } // end convertHEX
@@ -275,3 +287,15 @@ void GetSunPos(struct cTime utcTime, struct cLocation utcLocation, struct cSunCo
 	+ dParallax)/rad; 
 	} 
 } // end GetSunPos() 
+
+void beginTracking()
+{
+ Serial.println("Solar Tracking Initalized."); 
+ Serial.println("-----------------------------------------------------"); 
+ GetSunPos(utcTime,utcLocation,&utcSunCoordinates); // get the current solar vector
+ Serial.print("Azimuth = "); 
+ Serial.println(utcSunCoordinates.dAzimuth); 
+ Serial.print("Zenith = "); 
+ Serial.println(utcSunCoordinates.dZenithAngle); 
+}
+
