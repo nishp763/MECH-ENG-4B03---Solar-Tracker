@@ -39,6 +39,7 @@ struct cSunCoordinates utcSunCoordinates;
 void setup()
 {
 	Serial.begin(9600); // initialize the serial port
+  Wire.begin(); // Initialize the transmission process
 
 	/* Print message on the serial monitor */
 	Serial.println("SolarTracker v4.4");
@@ -53,7 +54,7 @@ void setup()
 
 	// Initialize Azimuth Stage Opto Sensor as INPUT
 	pinMode(Azimuth_Optical_Sensor, INPUT);
-	//home_azimuth();
+	home_azimuth();
   //setTime();
 	//move_azimuth("CCW",180);
 }
@@ -68,9 +69,9 @@ void home_azimuth() // This function will place the Azimuth stage to the home po
 	Serial.println("Moving Azimuth Stage to the Home Position");
 	for (int i = 0; i <= 180; i++)
 	{
-	Serial.print("i > ");
-	Serial.print(i);
-	Serial.println("");
+  	Serial.print("i > ");
+  	Serial.print(i);
+  	Serial.println("");
 		if(digitalRead(Azimuth_Optical_Sensor) == HIGH) // Sensor Triggered
 	  {
 	  	Serial.println("Azimuth Stage = Home Position");
@@ -96,44 +97,45 @@ void move_azimuth(String motor_direction, int azimuth_move_degrees) // This func
 	/* Set Direction PIN on Azimuth Stage */
 	if (motor_direction == "CW")
 	{
-	digitalWrite(Azimuth_Motor_Direction, LOW); // LOW = Clock Wise direction
-	Serial.println("Azimuth Motor Direction -> Clockwise");
+  	digitalWrite(Azimuth_Motor_Direction, LOW); // LOW = Clock Wise direction
+  	Serial.println("Azimuth Motor Direction -> Clockwise");
 	}
 	else if (motor_direction == "CCW")
 	{
-	digitalWrite(Azimuth_Motor_Direction, HIGH); // HIGH = Counter Clock Wise direction
-	Serial.println("Azimuth Motor Direction -> Counter Clockwise");
+  	digitalWrite(Azimuth_Motor_Direction, HIGH); // HIGH = Counter Clock Wise direction
+  	Serial.println("Azimuth Motor Direction -> Counter Clockwise");
 	}
 	else
 	{
-	Serial.println("ERROR: motor direction not specified properly...setting Azimuth to CW");
-	digitalWrite(Azimuth_Motor_Direction, LOW); // LOW = Clock Wise direction
+  	Serial.println("ERROR: motor direction not specified properly...setting Azimuth to CW");
+  	digitalWrite(Azimuth_Motor_Direction, LOW); // LOW = Clock Wise direction
 	}
 
 	/* Send Clock Signals to the Stepper Motor to move in the direction specified */
 	for(int i = 0; i < azimuth_steps; i++)
 	{
-	digitalWrite(Azimuth_Motor_Clock, HIGH);
-	delay(Stepper_Motor_Delay);
-	digitalWrite(Azimuth_Motor_Clock, LOW);
-	delay(Stepper_Motor_Delay);
+  	digitalWrite(Azimuth_Motor_Clock, HIGH);
+  	delay(Stepper_Motor_Delay);
+  	digitalWrite(Azimuth_Motor_Clock, LOW);
+  	delay(Stepper_Motor_Delay);
 	}
 }
 
-void setTime() {
-// set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)
-Serial.println("Set time ");
-Wire.beginTransmission(0x68);
-Wire.write(0); // point to address of the timekeeping registers
-Wire.write(0x00); // set seconds
-Wire.write(0x37); // set minutes
-Wire.write(0x80 | 0x15); // set hours 24 mode
-Wire.write(0x03); // day of week
-Wire.write(0x21); // date
-Wire.write(0x11); // month
-Wire.write(0x15); // year 00-00
-Wire.write(0x10); // provide 1 Hz square wave on pin 7
-Wire.endTransmission();
+void setTime() 
+{
+  // set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)
+  Serial.println("Set time ");
+  Wire.beginTransmission(0x68);
+  Wire.write(0); // point to address of the timekeeping registers
+  Wire.write(0x00); // set seconds
+  Wire.write(0x26); // set minutes
+  Wire.write(0x80 | 0x18); // set hours 24 mode
+  Wire.write(0x04); // day of week
+  Wire.write(0x22); // date
+  Wire.write(0x11); // month
+  Wire.write(0x17); // year 00-00
+  Wire.write(0x10); // provide 1 Hz square wave on pin 7
+  Wire.endTransmission();
 }
 
 byte convertHEX(byte value) { 
@@ -143,7 +145,6 @@ byte convertHEX(byte value) {
 
 void getCurrentTime() 
 {
-  Serial.println("Normal Mode");
   Wire.beginTransmission(0x68);
   Wire.write(0); // point to address of the timekeeping registers
   Wire.endTransmission();
