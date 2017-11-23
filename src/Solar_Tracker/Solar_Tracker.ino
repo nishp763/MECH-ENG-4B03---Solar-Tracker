@@ -1,8 +1,12 @@
 #include <Wire.h>
 #define Azimuth_Motor_Direction 7 // LOW = CW , HIGH = CCW
 #define Azimuth_Motor_Clock 6
+#define Zenith_Motor_Direction 5 // 
+#define Zenith_Motor_Clock 4
 #define Azimuth_Optical_Sensor 2 // HIGH = Triggered
+#define Zenith_Optical_Sensor 3 
 #define Stepper_Motor_Delay 5
+
 #define pi 3.1415926535897932384 
 #define twoPI (2.0*pi)
 #define rad (pi/180.0)
@@ -13,8 +17,6 @@
 const double MCMASTERLATITUDE = 43.434; 
 const double MCMASTERLONGITUDE = -80.535;
 
-
- 
 struct cTime { 
  int iYear; 
  int iMonth; 
