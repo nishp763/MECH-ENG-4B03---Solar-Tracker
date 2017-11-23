@@ -58,7 +58,7 @@ void setup()
 	// Initialize Azimuth Stage Opto Sensor as INPUT
 	pinMode(Azimuth_Optical_Sensor, INPUT);
 	home_azimuth();
-  setTime();
+  //setTime();
 	//move_azimuth("CCW",180);
 
   utcLocation.dLatitude = MCMASTERLATITUDE; 
@@ -147,10 +147,10 @@ void setTime()
   Wire.beginTransmission(0x68);
   Wire.write(0); // point to address of the timekeeping registers
   Wire.write(0x00); // set seconds
-  Wire.write(0x23); // set minutes
-  Wire.write(0x80 | 0x07); // set hours 24 mode
+  Wire.write(0x26); // set minutes
+  Wire.write(0x80 | 0x18); // set hours 24 mode
   Wire.write(0x04); // day of week
-  Wire.write(0x23); // date
+  Wire.write(0x22); // date
   Wire.write(0x11); // month
   Wire.write(0x17); // year 00-00
   Wire.write(0x10); // provide 1 Hz square wave on pin 7
@@ -305,15 +305,15 @@ void beginTracking()
  Serial.println(utcSunCoordinates.dAzimuth); 
  Serial.print("Zenith = "); 
  Serial.println(utcSunCoordinates.dZenithAngle);
- double diffAzimuth = utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth;
+ double diffAzimuth = utcCurrentPosition - utcSunCoordinates.dAzimuth;
  if (diffAzimuth < 0) // CCW
  {
    diffAzimuth = abs(diffAzimuth);
-   //move_azimuth("CW", diffAzimuth);
+   move_azimuth("CCW", diffAzimuth);
  }
  else
  {
-   //move_azimuth("CCW", diffAzimuth);
+   move_azimuth("CW", diffAzimuth);
  }
  
  double diffZenith = 0.0; 
