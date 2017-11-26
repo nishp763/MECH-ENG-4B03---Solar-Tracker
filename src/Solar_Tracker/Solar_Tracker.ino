@@ -181,11 +181,11 @@ void move_zenith(String motor_direction, int zenith_move_degrees) // This functi
 		// Update current position
 		if (motor_direction == "CW") // Subtraction from current pos if direction is CW
 		{
-			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle - 0.05; // Current Position is in degrees
+			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle - 0.045; // Current Position is in degrees
 		}
 		else if (motor_direction == "CCW") // Addition from current pos if direction is CCW
 		{
-			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle + 0.05; // Current Position is in degrees
+			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle + 0.045; // Current Position is in degrees
 		}
 	}
 }
