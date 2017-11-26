@@ -124,11 +124,11 @@ void home_azimuth() // This function will place the Azimuth stage to the home po
 	Serial.println("ERROR: Aziumth Stage moved from 0 - 180 degrees CW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
 }
 
-void home_zenith() 
+void home_zenith()
 {
 	Serial.println("Moving Zenith Stage to the Home Position");	// 90 degrees (Horizon)
 	digitalWrite(Zenith_Motor_Direction, LOW); // always go home CW = LOW
-	for (int i = 0; i <= 90; i++) 		//need to test 
+	for (int i = 0; i <= 90; i++) 		//need to test
 	{
 		if (digitalRead(Zenith_Optical_Sensor)) {		// Sensor Triggered
 			Serial.println("Zenith Stage = Home Position");
@@ -352,20 +352,22 @@ void beginTracking()
 	Serial.println(utcSunCoordinates.dAzimuth);
 	Serial.print("Zenith = ");
 	Serial.println(utcSunCoordinates.dZenithAngle);
-
-	double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
-
-	if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
+	if (utcSunCoordinates.dZenithAngle > 80.0)
 	{
-		move_azimuth("CW", diffAzimuth);
+		Serial.println("No tracking, off hours, go home Position");
+		homeAzimuth();
+		home_zenith();
 	}
-	else if (utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
+	else
 	{
-		move_azimuth("CCW", diffAzimuth);
-	}
-	else // No tracking, off hours, go home Position
-	{
-		home_azimuth();	// Home Azimuth Stage
-		home_zenith();	// Home Zenith Stage
+		double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
+		if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
+		{
+			move_azimuth("CW", diffAzimuth);
+		}
+		else if (utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
+		{
+			move_azimuth("CCW", diffAzimuth);
+		}
 	}
 }
