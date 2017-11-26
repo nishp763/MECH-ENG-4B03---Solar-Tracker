@@ -27,7 +27,7 @@
 const double MCMASTERLATITUDE = 43.434;
 const double MCMASTERLONGITUDE = -80.535;
 
-struct cTime 
+struct cTime
 {
 	int iYear;
 	int iMonth;
@@ -37,13 +37,13 @@ struct cTime
 	double dSeconds;
 };
 
-struct cLocation 
+struct cLocation
 {
 	double dLongitude;
 	double dLatitude;
 };
 
-struct cSunCoordinates 
+struct cSunCoordinates
 {
 	double dZenithAngle;
 	double dAzimuth;
@@ -76,6 +76,8 @@ void setup()
 
 	/* Home Azimuth and Zenith Stage */
 	home_azimuth(); // Calls the homing function to home zenith
+	// home the Zenith stepper
+	home_zenith();
 	//setTime();
 	//move_azimuth("CCW",180);
 
@@ -120,6 +122,26 @@ void home_azimuth() // This function will place the Azimuth stage to the home po
 		}
 	}
 	Serial.println("ERROR: Aziumth Stage moved from 0 - 180 degrees CW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
+}
+
+void home_zenith() 
+{
+	Serial.println("Moving Zenith Stage to the Home Position");	// 90 degrees (Horizon)
+	digitalWrite(Zenith_Motor_Direction, LOW); // always go home CW = LOW
+	for (int i = 0; i <= 90; i++) 		//need to test 
+	{
+		if (digitalRead(Zenith_Optical_Sensor)) {		// Sensor Triggered
+			Serial.println("Zenith Stage = Home Position");
+			utcCurrentPosition.dZenithAngle = 90.0;
+			return;
+		}
+//Take a step
+		digitalWrite(Zenith_Motor_Clock, HIGH);
+		delay(Stepper_Motor_Delay);
+		digitalWrite(Zenith_Motor_Clock, LOW);
+		delay(Stepper_Motor_Delay);
+	}
+	Serial.println("ERROR: Zenith Stage moved from 0 - 90 degrees CW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
 }
 
 void move_azimuth(String motor_direction, int azimuth_move_degrees) // This function will send a signal to the stepper motor to move the azimuth stage
@@ -333,17 +355,17 @@ void beginTracking()
 
 	double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
 
-	if(utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
+	if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
 	{
 		move_azimuth("CW", diffAzimuth);
 	}
-	else if(utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
+	else if (utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
 	{
 		move_azimuth("CCW", diffAzimuth);
 	}
 	else // No tracking, off hours, go home Position
 	{
-		home_azimuth(); // Home Azimuth Stage
-		// Home Zenith Stage
+		home_azimuth();	// Home Azimuth Stage
+		home_zenith();	// Home Zenith Stage
 	}
 }
