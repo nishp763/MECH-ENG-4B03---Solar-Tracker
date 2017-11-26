@@ -144,6 +144,52 @@ void home_zenith()
 	Serial.println("ERROR: Zenith Stage moved from 0 - 90 degrees CW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
 }
 
+void move_zenith(String motor_direction, int zenith_move_degrees) // This function will send a signal to the stepper motor to move the zenith stage
+{
+	/* Convert degrees to the # of steps */
+	int zenith_steps = zenith_move_degrees / 0.045;		// 1.8/40 = 0.045
+	Serial.print("Zenith Steps > ");
+	Serial.print(zenith_steps);
+	Serial.println("");
+
+	/* Set Direction PIN on Zenith Stage */
+	if (motor_direction == "CW")
+	{
+		digitalWrite(Zenith_Motor_Direction, LOW); // LOW = Clock Wise direction
+		Serial.println("Zenith Motor Direction -> Clockwise");
+	}
+	else if (motor_direction == "CCW")
+	{
+		digitalWrite(Zenith_Motor_Direction, HIGH); // HIGH = Counter Clock Wise direction
+		Serial.println("Zenith Motor Direction -> Counter Clockwise");
+	}
+	else
+	{
+		Serial.println("ERROR: motor direction not specified properly...setting Zenith to CW");
+		motor_direction = "CW";
+		digitalWrite(Zenith_Motor_Direction, LOW); // LOW = Clock Wise direction
+	}
+
+	/* Send Clock Signals to the Stepper Motor to move in the direction specified */
+	for (int i = 0; i < zenith_steps; i++)
+	{
+		digitalWrite(Zenith_Motor_Clock, HIGH);
+		delay(Stepper_Motor_Delay);
+		digitalWrite(Zenith_Motor_Clock, LOW);
+		delay(Stepper_Motor_Delay);
+
+		// Update current position
+		if (motor_direction == "CW") // Subtraction from current pos if direction is CW
+		{
+			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle - 0.05; // Current Position is in degrees
+		}
+		else if (motor_direction == "CCW") // Addition from current pos if direction is CCW
+		{
+			utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle + 0.05; // Current Position is in degrees
+		}
+	}
+}
+
 void move_azimuth(String motor_direction, int azimuth_move_degrees) // This function will send a signal to the stepper motor to move the azimuth stage
 {
 	/* Convert degrees to the # of steps */
