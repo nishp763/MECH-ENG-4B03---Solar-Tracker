@@ -416,7 +416,7 @@ void beginTracking()
 		{
 			move_azimuth("CCW", diffAzimuth);
 		}
-		if(0 <= utcSunCoordinates.dZenithAngle <= 90)
+		if (0 <= utcSunCoordinates.dZenithAngle <= 80)
 		{
 		    move_zenith("CCW", diffZenith);
 		}
