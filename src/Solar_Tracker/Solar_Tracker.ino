@@ -401,19 +401,24 @@ void beginTracking()
 	if (utcSunCoordinates.dZenithAngle > 80.0)
 	{
 		Serial.println("No tracking, off hours, go home Position");
-		homeAzimuth();
+		home_azimuth();
 		home_zenith();
 	}
 	else
 	{
 		double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
+		double diffZenith = abs(utcCurrentPosition.dZenithAngle - utcSunCoordinates.dZenithAngle); 
 		if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
 		{
 			move_azimuth("CW", diffAzimuth);
 		}
-		else if (utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
+		if (utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
 		{
 			move_azimuth("CCW", diffAzimuth);
+		}
+		if(0 <= utcSunCoordinates.dZenithAngle <= 90)
+		{
+		    move_zenith("CCW", diffZenith);
 		}
 	}
 }
