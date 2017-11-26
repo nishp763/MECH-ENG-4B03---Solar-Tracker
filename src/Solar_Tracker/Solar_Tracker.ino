@@ -1,3 +1,13 @@
+/*
+	Course: MECH ENG 4B03 - Fall 2017
+	Instructor: Dr. Khalil
+	Team #: 7
+	Group Members: David Cleave, Efe Ijevu, Jordan Hebbert, Jared Rayner, Janak Patel, Nisarg Patel
+	Project Description: Heliostat Solar Tracker
+	McMaster University
+*/
+
+
 #include <Wire.h>
 #define Azimuth_Motor_Direction 7 // LOW = CW , HIGH = CCW
 #define Azimuth_Motor_Clock 6
@@ -17,7 +27,8 @@
 const double MCMASTERLATITUDE = 43.434;
 const double MCMASTERLONGITUDE = -80.535;
 
-struct cTime {
+struct cTime 
+{
 	int iYear;
 	int iMonth;
 	int iDay;
@@ -26,16 +37,19 @@ struct cTime {
 	double dSeconds;
 };
 
-struct cLocation {
+struct cLocation 
+{
 	double dLongitude;
 	double dLatitude;
 };
 
-struct cSunCoordinates {
+struct cSunCoordinates 
+{
 	double dZenithAngle;
 	double dAzimuth;
 };
 
+// Initialize all the structs to be used later in the code
 struct cTime utcTime;
 struct cLocation utcLocation;
 struct cSunCoordinates utcSunCoordinates;
@@ -59,8 +73,10 @@ void setup()
 
 	// Initialize Azimuth Stage Opto Sensor as INPUT
 	pinMode(Azimuth_Optical_Sensor, INPUT);
-	home_azimuth();
-	setTime();
+
+	/* Home Azimuth and Zenith Stage */
+	home_azimuth(); // Calls the homing function to home zenith
+	//setTime();
 	//move_azimuth("CCW",180);
 
 	utcLocation.dLatitude = MCMASTERLATITUDE;
@@ -113,7 +129,6 @@ void move_azimuth(String motor_direction, int azimuth_move_degrees) // This func
 	Serial.print("Azimuth Steps > ");
 	Serial.print(azimuth_steps);
 	Serial.println("");
-	// Serial.println("Moving Azimuth Motor to " + azimuth_move_degrees + " degrees with " + azimuth_steps + " steps.");
 
 	/* Set Direction PIN on Azimuth Stage */
 	if (motor_direction == "CW")
@@ -129,6 +144,7 @@ void move_azimuth(String motor_direction, int azimuth_move_degrees) // This func
 	else
 	{
 		Serial.println("ERROR: motor direction not specified properly...setting Azimuth to CW");
+		motor_direction = "CW";
 		digitalWrite(Azimuth_Motor_Direction, LOW); // LOW = Clock Wise direction
 	}
 
@@ -139,12 +155,21 @@ void move_azimuth(String motor_direction, int azimuth_move_degrees) // This func
 		delay(Stepper_Motor_Delay);
 		digitalWrite(Azimuth_Motor_Clock, LOW);
 		delay(Stepper_Motor_Delay);
+
+		// Update current position
+		if (motor_direction == "CW") // Subtraction from current pos if direction is CW
+		{
+			utcCurrentPosition.dAzimuth = utcCurrentPosition.dAzimuth - 0.05; // Current Position is in degrees
+		}
+		else if (motor_direction == "CCW") // Addition from current pos if direction is CCW
+		{
+			utcCurrentPosition.dAzimuth = utcCurrentPosition.dAzimuth + 0.05; // Current Position is in degrees
+		}
 	}
 }
 
 void setTime()
 {
-	// set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)
 	Serial.println("Set time ");
 	Wire.beginTransmission(0x68);
 	Wire.write(0); // point to address of the timekeeping registers
@@ -305,17 +330,20 @@ void beginTracking()
 	Serial.println(utcSunCoordinates.dAzimuth);
 	Serial.print("Zenith = ");
 	Serial.println(utcSunCoordinates.dZenithAngle);
-	double diffAzimuth = utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth;
-	if (diffAzimuth < 0) // CCW
-	{
-		diffAzimuth = abs(diffAzimuth);
-		//move_azimuth("CW", diffAzimuth);
-	}
-	else
-	{
-		//move_azimuth("CCW", diffAzimuth);
-	}
 
-	double diffZenith = 0.0;
+	double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
+
+	if(utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CW
+	{
+		move_azimuth("CW", diffAzimuth);
+	}
+	else if(utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CCW
+	{
+		move_azimuth("CCW", diffAzimuth);
+	}
+	else // No tracking, off hours, go home Position
+	{
+		home_azimuth(); // Home Azimuth Stage
+		// Home Zenith Stage
+	}
 }
-
