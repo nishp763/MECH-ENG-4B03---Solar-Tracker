@@ -23,9 +23,16 @@
 #define dEarthRadius 6371.01 // in km 
 #define dAstroUnit 149597890 // in km 
 
+#define NormalControlFrequency 10000
+#define DebugControlFrequency 100
+#define DebugMultiplier 30
+
 //Use decimal format (Latitude = 43 + 26.0181/60 = 43.434; Longitude = -1 * (79 degrees + 92.0892/60) = -80.535;)
 const double MCMASTERLATITUDE = 43.434;
 const double MCMASTERLONGITUDE = -80.535;
+
+int ControlFrequency = NormalControlFrequency;
+int Mode = 0;
 
 struct cTime 
 {
@@ -78,6 +85,7 @@ void setup()
   home_azimuth("CW"); // Calls the homing function to home zenith
   //setTime();
   //move_azimuth("CCW",180);
+  setDebugMode();
 
   utcLocation.dLatitude = MCMASTERLATITUDE;
   utcLocation.dLongitude = MCMASTERLONGITUDE;
@@ -98,6 +106,7 @@ void loop()
   Serial.print("Current Zenith = ");
   Serial.println(utcCurrentPosition.dZenithAngle);
   beginTracking();
+  delay(ControlFrequency);
 }
 
 void home_azimuth(String motor_direction) // This function will place the Azimuth stage to the home position
@@ -200,17 +209,36 @@ byte convertHEX(byte value)
 
 void getCurrentTime()
 {
-  Wire.beginTransmission(0x68);
-  Wire.write(0); // point to address of the timekeeping registers
-  Wire.endTransmission();
-  Wire.requestFrom(0x68, 7); // request 7 bytes from DS1307
-  utcTime.dSeconds = convertHEX(Wire.read());
-  utcTime.dMinutes = convertHEX(Wire.read());
-  utcTime.dHours = convertHEX(Wire.read());
-  Wire.read(); // disregard the day of the week
-  utcTime.iDay = convertHEX(Wire.read());
-  utcTime.iMonth = convertHEX(Wire.read());
-  utcTime.iYear = 2000 + convertHEX(Wire.read());
+  if (Mode) 
+  {
+    Serial.println("Debug Mode");
+    utcTime.dMinutes += DebugMultiplier;
+    if (utcTime.dMinutes > 59) 
+    {
+      utcTime.dMinutes -= 60;
+      utcTime.dHours++;
+    }
+    if (utcTime.dHours > 23) 
+    {
+      utcTime.dHours -= 24;
+      utcTime.iDay++;
+    }
+  }
+  else 
+  {
+    Serial.println("Normal Mode");
+    Wire.beginTransmission(0x68);
+    Wire.write(0); // point to address of the timekeeping registers
+    Wire.endTransmission();
+    Wire.requestFrom(0x68, 7); // request 7 bytes from DS1307
+    utcTime.dSeconds = convertHEX(Wire.read());
+    utcTime.dMinutes = convertHEX(Wire.read());
+    utcTime.dHours = convertHEX(Wire.read());
+    Wire.read(); // disregard the day of the week
+    utcTime.iDay = convertHEX(Wire.read());
+    utcTime.iMonth = convertHEX(Wire.read());
+    utcTime.iYear = 2000 + convertHEX(Wire.read());
+  }
   Serial.println("-----------------------------------------------------");
   Serial.println("Universal Coordinate Time");
   Serial.print(" Time (Hh:Mm:Ss): ");
@@ -360,4 +388,16 @@ void beginTracking()
   {
     home_azimuth("CCW");
   }
+}
+
+void setDebugMode() 
+{
+  Mode = 1;
+  ControlFrequency = DebugControlFrequency;
+  utcTime.dMinutes = 0x00;
+  utcTime.dHours = 0x00;
+  utcTime.dSeconds = 0x00;
+  utcTime.iDay = 0x1E;
+  utcTime.iMonth = 0x0B;
+  utcTime.iYear = 0x11;
 }
