@@ -367,24 +367,23 @@ void beginTracking()
   Serial.print("Zenith = ");
   Serial.println(utcSunCoordinates.dZenithAngle);
 
-  double diffAzimuth = abs(utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
+  double diffAzimuth = (utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
   Serial.print("Azimuth Difference = ");
   Serial.println(diffAzimuth);
-
-  if(utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 90) // Move CCW
+  
+  if (diffAzimuth < 0 && diffAzimuth >= -90.0) // Move Counter Clockwise
   {
-    move_azimuth("CCW", diffAzimuth);
+    move_azimuth("CCW", abs(diffAzimuth)); 
   }
-  else if(utcSunCoordinates.dAzimuth > 90 && utcSunCoordinates.dAzimuth <= 180) // Move CW
+  else if (diffAzimuth > 0 && diffAzimuth <= 90.0) // Move Clockwise
   {
     move_azimuth("CW", diffAzimuth);
   }
-  //else // No tracking, off hours, go home Position
-  //{
-    //home_azimuth(); // Home Azimuth Stage
-    // Home Zenith Stage
-  //}
-  else if (utcSunCoordinates.dAzimuth > 180) // No tracking, off hours, go home Position through CCW
+  else if (diffAzimuth < -90.0) // Home Azimuth through CW
+  {
+    home_azimuth("CW");
+  }
+  else if (dffiAzimuth > 90.0) // Home Azimuth through CCW
   {
     home_azimuth("CCW");
   }
