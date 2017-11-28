@@ -11,7 +11,7 @@
 #include <Wire.h>
 #define Azimuth_Motor_Direction 7 // LOW = CW , HIGH = CCW
 #define Azimuth_Motor_Clock 6
-#define Zenith_Motor_Direction 5 // LOW = CW, HIGH = CCW. Move zenith down -> CW, Move zenith up -> CCW
+#define Zenith_Motor_Direction 5 // 
 #define Zenith_Motor_Clock 4
 #define Azimuth_Optical_Sensor 2 // HIGH = Triggered
 #define Zenith_Optical_Sensor 3 // HIGH = Triggered
@@ -81,21 +81,12 @@ void setup()
   // Initialize Azimuth Stage Opto Sensor as INPUT
   pinMode(Azimuth_Optical_Sensor, INPUT);
 
-  /* Initialize all Sensors and Actuators for the Zenith Stage */
-  // Initialize Zenith Stage Motors as OUTPUT
-  pinMode(Zenith_Motor_Direction, OUTPUT);
-  pinMode(Zenith_Motor_Clock, OUTPUT);
-
-  // Initialize Zenith Stage Opto Sensor as INPUT
-  pinMode(Zenith_Optical_Sensor, INPUT);
-
   /* Home Azimuth and Zenith Stage */
   home_azimuth("CW"); // Calls the homing function to home zenith
   //setTime();
   //move_azimuth("CCW",180);
   //setDebugMode();
-  home_zenith("CW");
-  //move_zenith("CCW",90);
+  home_zenith();
 
   utcLocation.dLatitude = MCMASTERLATITUDE;
   utcLocation.dLongitude = MCMASTERLONGITUDE;
@@ -219,52 +210,6 @@ void move_azimuth(String motor_direction, double azimuth_move_degrees) // This f
     else if (motor_direction == "CCW") // Addition from current pos if direction is CCW
     {
       utcCurrentPosition.dAzimuth = utcCurrentPosition.dAzimuth - 0.05; // Current Position is in degrees
-    }
-  }
-}
-
-void move_zenith(String motor_direction, double zenith_move_degrees) // This function will send a signal to the stepper motor to move the zenith stage
-{
-  /* Convert degrees to the # of steps */
-  int zenith_steps = (zenith_move_degrees / 0.045);
-  Serial.print("Zenith Steps > ");
-  Serial.print(zenith_steps);
-  Serial.println("");
-
-  /* Set Direction PIN on Zenith Stage */
-  if (motor_direction == "CW")
-  {
-    digitalWrite(Zenith_Motor_Direction, LOW); // LOW = Clock Wise direction
-    Serial.println("Zenith Motor Direction -> Clockwise");
-  }
-  else if (motor_direction == "CCW")
-  {
-    digitalWrite(Zenith_Motor_Direction, HIGH); // HIGH = Counter Clock Wise direction
-    Serial.println("Zenith Motor Direction -> Counter Clockwise");
-  }
-  else
-  {
-    Serial.println("ERROR: motor direction not specified properly...setting Zenith to CW");
-    motor_direction = "CW";
-    digitalWrite(Zenith_Motor_Direction, LOW); // LOW = Clock Wise direction
-  }
-
-  /* Send Clock Signals to the Stepper Motor to move in the direction specified */
-  for (int i = 0; i < zenith_steps; i++)
-  {
-    digitalWrite(Zenith_Motor_Clock, HIGH);
-    delay(Stepper_Motor_Delay);
-    digitalWrite(Zenith_Motor_Clock, LOW);
-    delay(Stepper_Motor_Delay);
-
-    // Update current position
-    if (motor_direction == "CW") // Subtraction from current pos if direction is CW
-    {
-      utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle + 0.045; // Current Position is in degrees
-    }
-    else if (motor_direction == "CCW") // Addition from current pos if direction is CCW
-    {
-      utcCurrentPosition.dZenithAngle = utcCurrentPosition.dZenithAngle - 0.045; // Current Position is in degrees
     }
   }
 }

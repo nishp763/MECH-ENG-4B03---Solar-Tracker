@@ -89,7 +89,7 @@ void setup()
 // home the AZ stepper by looking for blocked opto slot, when home = East = 90 degrees = 1800 steps
 	homeAzimuth();
 // home the Zenith stepper
-//homeZenith();
+homeZenith();
 //Init Time
 	getCurrentTime();
 	setDebugMode();
