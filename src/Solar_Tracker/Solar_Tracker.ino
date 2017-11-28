@@ -141,7 +141,6 @@ void home_azimuth(String motor_direction) // This function will place the Azimut
 void move_azimuth(String motor_direction, double azimuth_move_degrees) // This function will send a signal to the stepper motor to move the azimuth stage
 {
   /* Convert degrees to the # of steps */
-  Serial.println(azimuth_move_degrees);
   int azimuth_steps = (azimuth_move_degrees / 0.05);
   Serial.print("Azimuth Steps > ");
   Serial.print(azimuth_steps);
@@ -367,24 +366,24 @@ void beginTracking()
   Serial.print("Zenith = ");
   Serial.println(utcSunCoordinates.dZenithAngle);
 
-  double diffAzimuth = (utcCurrentPosition.dAzimuth - utcSunCoordinates.dAzimuth); // Difference between the target and current position
+  double diffAzimuth = (utcSunCoordinates.dAzimuth - utcCurrentPosition.dAzimuth); // Difference between the target and current position
   Serial.print("Azimuth Difference = ");
   Serial.println(diffAzimuth);
-  
-  if (diffAzimuth < 0 && diffAzimuth >= -90.0) // Move Counter Clockwise
+
+  if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 180.0) // Tracking hours and within the limit
   {
-    move_azimuth("CCW", abs(diffAzimuth)); 
+    if (diffAzimuth < 0) // Move Counter Clockwise
+    {
+      move_azimuth("CCW", abs(diffAzimuth)); 
+    }
+    else if (diffAzimuth > 0) // Move Clockwise
+    {
+      move_azimuth("CW", diffAzimuth);
+    }
   }
-  else if (diffAzimuth > 0 && diffAzimuth <= 90.0) // Move Clockwise
+  else // Off hours, place azimuth stage home
   {
-    move_azimuth("CW", diffAzimuth);
-  }
-  else if (diffAzimuth < -90.0) // Home Azimuth through CW
-  {
-    home_azimuth("CW");
-  }
-  else if (dffiAzimuth > 90.0) // Home Azimuth through CCW
-  {
+    Serial.println("Off hours, cannot track. Placing Azimuth Stage Home");
     home_azimuth("CCW");
   }
 }
