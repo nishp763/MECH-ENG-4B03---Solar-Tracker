@@ -93,9 +93,11 @@ void setup()
   home_azimuth("CW"); // Calls the homing function to home zenith
   //setTime();
   //move_azimuth("CCW",180);
-  //setDebugMode();
   home_zenith("CW");
   //move_zenith("CCW",90);
+  
+  //setDebugMode();
+
 
   utcLocation.dLatitude = MCMASTERLATITUDE;
   utcLocation.dLongitude = MCMASTERLONGITUDE;
@@ -116,7 +118,7 @@ void loop()
   Serial.print("Current Zenith = ");
   Serial.println(utcCurrentPosition.dZenithAngle);
   //beginTracking();
-  //delay(ControlFrequency);
+  delay(ControlFrequency);
 }
 
 void home_azimuth(String motor_direction) // This function will place the Azimuth stage to the home position
@@ -455,6 +457,11 @@ void beginTracking()
   Serial.print("Azimuth Difference = ");
   Serial.println(diffAzimuth);
 
+  double diffZenith = (utcSunCoordinates.dZenithAngle - utcCurrentPosition.dZenithAngle); // Difference between the target and current position
+  Serial.print("Zenith Difference = ");
+  Serial.println(diffZenith);
+
+  /* Perform Azimuth Tracking */
   if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 180.0) // Tracking hours and within the limit
   {
     if (diffAzimuth < 0) // Move Counter Clockwise
@@ -470,6 +477,24 @@ void beginTracking()
   {
     Serial.println("Off hours, cannot track. Placing Azimuth Stage Home");
     home_azimuth("CCW");
+  }
+
+  /* Perform Zenith Tracking */
+  if (utcSunCoordinates.dZenithAngle >= 0 && utcSunCoordinates.dZenithAngle <= 90.0) // Tracking hours and within the limit
+  {
+    if (diffZenith < 0) // Move Counter Clockwise
+    {
+      move_zenith("CCW", abs(diffZenith)); 
+    }
+    else if (diffZenith > 0) // Move Clockwise
+    {
+      move_zenith("CW", diffZenith);
+    }
+  }
+  else // Off hours, place azimuth stage home
+  {
+    Serial.println("Off hours, cannot track. Placing Zenith Stage Home");
+    home_zenith("CCW");
   }
 }
 
