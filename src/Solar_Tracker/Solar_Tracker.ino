@@ -96,7 +96,7 @@ void setup()
   home_zenith("CW");
   //move_zenith("CCW",90);
   
-  //setDebugMode();
+  setDebugMode();
 
 
   utcLocation.dLatitude = MCMASTERLATITUDE;
@@ -117,7 +117,7 @@ void loop()
   Serial.println(utcCurrentPosition.dAzimuth);
   Serial.print("Current Zenith = ");
   Serial.println(utcCurrentPosition.dZenithAngle);
-  //beginTracking();
+  beginTracking();
   delay(ControlFrequency);
 }
 
@@ -451,6 +451,7 @@ void beginTracking()
   Serial.print("Azimuth = ");
   Serial.println(utcSunCoordinates.dAzimuth);
   Serial.print("Zenith = ");
+  utcSunCoordinates.dZenithAngle = abs(utcSunCoordinates.dZenithAngle - 90.0);
   Serial.println(utcSunCoordinates.dZenithAngle);
 
   double diffAzimuth = (utcSunCoordinates.dAzimuth - utcCurrentPosition.dAzimuth); // Difference between the target and current position
@@ -472,29 +473,26 @@ void beginTracking()
     {
       move_azimuth("CW", diffAzimuth);
     }
+
+    /* Perform Zenith Tracking */
+    if (utcSunCoordinates.dZenithAngle >= 0 && utcSunCoordinates.dZenithAngle <= 90.0) // Tracking hours and within the limit
+    {
+      if (diffZenith < 0) // Move Counter Clockwise
+      {
+        move_zenith("CCW", abs(diffZenith)); 
+      }
+      else if (diffZenith > 0) // Move Clockwise
+      {
+        move_zenith("CW", diffZenith);
+      }
+    }
   }
   else // Off hours, place azimuth stage home
   {
     Serial.println("Off hours, cannot track. Placing Azimuth Stage Home");
     home_azimuth("CCW");
-  }
-
-  /* Perform Zenith Tracking */
-  if (utcSunCoordinates.dZenithAngle >= 0 && utcSunCoordinates.dZenithAngle <= 90.0) // Tracking hours and within the limit
-  {
-    if (diffZenith < 0) // Move Counter Clockwise
-    {
-      move_zenith("CCW", abs(diffZenith)); 
-    }
-    else if (diffZenith > 0) // Move Clockwise
-    {
-      move_zenith("CW", diffZenith);
-    }
-  }
-  else // Off hours, place azimuth stage home
-  {
     Serial.println("Off hours, cannot track. Placing Zenith Stage Home");
-    home_zenith("CCW");
+    home_zenith("CW");
   }
 }
 
