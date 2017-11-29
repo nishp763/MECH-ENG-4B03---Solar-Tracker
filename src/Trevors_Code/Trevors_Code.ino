@@ -15,7 +15,7 @@
 #define dAstroUnit 149597890 // in km
 //Paramaters
 #define MAXAZHOMESTEP 7200 // 1 Rev * 200 Steps / rev * 20:1 worm
-#define MAXZEHOMESTEP 550 // 0.5 Rev * 200 Steps / rev * 5.5:1 gear
+#define MAXZEHOMESTEP 4000 // 0.5 Rev * 200 Steps / rev * 5.5:1 gear
 #define ANGLEAZHOME 22.5 // AZ home position = East = +90 degrees
 #define ANGLEZEHOME 0 // ZE home position = Horizon = +90 degrees
 #define STEPDLY 2 //Default 5
@@ -24,10 +24,10 @@
 #define StepDelayMoveAZ 3
 #define StepDelayMoveZE 10
 #define STEPSPERDEGAZ 20.0 // 1.8 deg per step and 36:1 reduction worm gear for Azimuth
-#define STEPSPERDEGZE 3.055 // 1.8 deg per step and 5.5:1 gear reduction for Zenith
+#define STEPSPERDEGZE 22.22 // 1.8 deg per step and 5.5:1 gear reduction for Zenith
 #define NormalControlFrequency 10000
 #define DebugControlFrequency 100
-#define DebugMultiplier 2
+#define DebugMultiplier 30
 //Initialize structures
 struct cTime {
 	int iYear;
@@ -106,13 +106,14 @@ void loop() {
 	delay(ControlFrequency);
 }
 void setDebugMode() {
-	Mode = 1;
-	ControlFrequency = DebugControlFrequency;
-	utcTime.dMinutes = 0;
-	utcTime.dHours = 0x0B;
-	utcTime.dSeconds = 0;
-	utcTime.iDay = 0x08;
-	utcTime.iMonth = 0x06;
+  Mode = 1;
+  ControlFrequency = DebugControlFrequency;
+  utcTime.dMinutes = 0x00;
+  utcTime.dHours = 0x00;
+  utcTime.dSeconds = 0x00;
+  utcTime.iDay = 0x1E;
+  utcTime.iMonth = 0x0B;
+  utcTime.iYear = 0x11;
 }
 void setTime() {
 // set the time - below corresponds to Monday, August 19, 2013, 17:40 UTC (1:40pm DST in Hamilton)

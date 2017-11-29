@@ -90,7 +90,7 @@ void setup()
   pinMode(Zenith_Optical_Sensor, INPUT);
 
   /* Home Azimuth and Zenith Stage */
-  home_azimuth("CCW"); // Calls the homing function to home zenith
+  home_azimuth("CW"); // Calls the homing function to home zenith
   //setTime();
   //move_azimuth("CCW",180);
   home_zenith("CW");
@@ -124,7 +124,7 @@ void loop()
 void home_azimuth(String motor_direction) // This function will place the Azimuth stage to the home position
 {
   Serial.println("Moving Azimuth Stage to the Home Position");
-  for (int i = 0; i <= 270; i++)
+  for (int i = 0; i <= 180; i++)
   {
     Serial.print("i > ");
     Serial.print(i);
@@ -147,7 +147,7 @@ void home_azimuth(String motor_direction) // This function will place the Azimut
       }
     }
   }
-  Serial.println("ERROR: Aziumth Stage moved from 0 - 270 degrees CCW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
+  Serial.println("ERROR: Aziumth Stage moved from 0 - 180 degrees CW, Home Position not reached. Try cleaning the optical sensor or perhaps go in CCW position.");
 }
 
 void home_zenith(String motor_direction)
@@ -277,10 +277,10 @@ void setTime()
   Wire.beginTransmission(0x68);
   Wire.write(0); // point to address of the timekeeping registers
   Wire.write(0x00); // set seconds
-  Wire.write(0x00); // set minutes
-  Wire.write(0x80 | 0x23); // set hours 24 mode
-  Wire.write(0x05); // day of week
-  Wire.write(0x30); // date
+  Wire.write(0x23); // set minutes
+  Wire.write(0x80 | 0x07); // set hours 24 mode
+  Wire.write(0x04); // day of week
+  Wire.write(0x23); // date
   Wire.write(0x11); // month
   Wire.write(0x17); // year 00-00
   Wire.write(0x10); // provide 1 Hz square wave on pin 7
@@ -329,7 +329,7 @@ void getCurrentTime()
   Serial.println("Universal Coordinate Time");
   Serial.print(" Time (Hh:Mm:Ss): ");
   if ((int)utcTime.dHours < 10) Serial.print("0");
-  Serial.print((int)utcTime.dHours - 5, DEC);
+  Serial.print((int)utcTime.dHours, DEC);
   Serial.print(":");
   if ((int)utcTime.dMinutes < 10) Serial.print("0");
   Serial.print((int)utcTime.dMinutes, DEC);
@@ -464,6 +464,17 @@ void beginTracking()
   /* Perform Azimuth Tracking */
   if (utcSunCoordinates.dZenithAngle >= 0 && utcSunCoordinates.dZenithAngle <= 90.0) // Tracking hours and within the limit
   {
+    if (diffAzimuth < 0) // Move Counter Clockwise
+    {
+      move_azimuth("CCW", abs(diffAzimuth)); 
+    }
+    else if (diffAzimuth > 0) // Move Clockwise
+    {
+      move_azimuth("CW", diffAzimuth);
+    }
+
+    /* Perform Zenith Tracking */
+    
       if (diffZenith < 0) // Move Counter Clockwise
       {
         move_zenith("CCW", abs(diffZenith)); 
@@ -472,19 +483,6 @@ void beginTracking()
       {
         move_zenith("CW", diffZenith);
       }
-
-    /* Perform Zenith Tracking */
-    if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 270.0) // Tracking hours and within the limit
-    {
-      if (diffAzimuth < 0) // Move Counter Clockwise
-      {
-        move_azimuth("CCW", abs(diffAzimuth)); 
-      }
-      else if (diffAzimuth > 0) // Move Clockwise
-      {
-        move_azimuth("CW", diffAzimuth);
-      }
-    }
   }
   else // Off hours, place azimuth stage home
   {
