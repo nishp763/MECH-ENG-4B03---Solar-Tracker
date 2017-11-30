@@ -25,7 +25,7 @@
 
 #define NormalControlFrequency 10000
 #define DebugControlFrequency 100
-#define DebugMultiplier 30
+#define DebugMultiplier 10
 
 //Use decimal format (Latitude = 43 + 26.0181/60 = 43.434; Longitude = -1 * (79 degrees + 92.0892/60) = -80.535;)
 const double MCMASTERLATITUDE = 43.434;
@@ -33,6 +33,8 @@ const double MCMASTERLONGITUDE = -80.535;
 
 int ControlFrequency = NormalControlFrequency;
 int Mode = 0;
+int AzimuthErrorFlag = 1; // 1 = Error, 0 = No Error
+int ZenithErrorFlag = 1; // 1 = Error, 0 = No Error
 
 struct cTime 
 {
@@ -112,6 +114,10 @@ void setup()
 
 void loop()
 {
+  while(AzimuthErrorFlag && ZenithErrorFlag) // Error Homing Stages then get stuck in this loop and do not go further
+  {
+  	Serial.println("Error in homing one of the stages");
+  }
   getCurrentTime();
   Serial.print("Current Azimuth = ");
   Serial.println(utcCurrentPosition.dAzimuth);
@@ -126,13 +132,14 @@ void home_azimuth(String motor_direction) // This function will place the Azimut
   Serial.println("Moving Azimuth Stage to the Home Position");
   for (int i = 0; i <= 360; i++)
   {
-    Serial.print("i > ");
-    Serial.print(i);
-    Serial.println("");
+    //Serial.print("i > ");
+    //Serial.print(i);
+    //Serial.println("");
     if (digitalRead(Azimuth_Optical_Sensor) == HIGH) // Sensor Triggered
     {
       Serial.println("Azimuth Stage = Home Position");
       utcCurrentPosition.dAzimuth = 90.0;
+      AzimuthErrorFlag = 0;
       return;
     }
     else
@@ -155,13 +162,14 @@ void home_zenith(String motor_direction)
   Serial.println("Moving Zenith Stage to the Home Position");
   for (int i = 0; i <= 90; i++)
   {
-    Serial.print("i > ");
-    Serial.print(i);
-    Serial.println("");
+    //Serial.print("i > ");
+    //Serial.print(i);
+    //Serial.println("");
     if (digitalRead(Zenith_Optical_Sensor) == HIGH) // Sensor Triggered
     {
       Serial.println("Zenith Stage = Home Position");
       utcCurrentPosition.dZenithAngle = 90.0;
+      ZenithErrorFlag = 0;
       return;
     }
     else
@@ -271,6 +279,7 @@ void move_zenith(String motor_direction, double zenith_move_degrees) // This fun
   }
 }
 
+/* This function will set the time specified below in UTC to the Real Time Clock */
 void setTime()
 {
   Serial.println("Set time ");
@@ -329,13 +338,25 @@ void getCurrentTime()
   Serial.println("Universal Coordinate Time");
   Serial.print(" Time (Hh:Mm:Ss): ");
   if ((int)utcTime.dHours < 10) Serial.print("0");
-  Serial.print((int)utcTime.dHours - 5, DEC);
+  Serial.print((int)utcTime.dHours, DEC);
   Serial.print(":");
   if ((int)utcTime.dMinutes < 10) Serial.print("0");
   Serial.print((int)utcTime.dMinutes, DEC);
   Serial.print(":");
   if (utcTime.dSeconds < 10) Serial.print("0");
   Serial.println((int)utcTime.dSeconds, DEC);
+
+  Serial.println("Eastern Standard Time");
+  Serial.print(" Time (Hh:Mm:Ss): ");
+  if ((int)utcTime.dHours < 10) Serial.print("0");
+  Serial.print((int)(utcTime.dHours-5), DEC);
+  Serial.print(":");
+  if ((int)utcTime.dMinutes < 10) Serial.print("0");
+  Serial.print((int)utcTime.dMinutes, DEC);
+  Serial.print(":");
+  if (utcTime.dSeconds < 10) Serial.print("0");
+  Serial.println((int)utcTime.dSeconds, DEC);
+
   Serial.print(" Date (Dd/Mm/YYYY) ");
   if (utcTime.iDay < 10) Serial.print("0");
   Serial.print(utcTime.iDay, DEC);
@@ -448,9 +469,9 @@ void beginTracking()
   Serial.println("Solar Tracking Initalized.");
   Serial.println("-----------------------------------------------------");
   GetSunPos(utcTime, utcLocation, &utcSunCoordinates); // get the current solar vector
-  Serial.print("Azimuth = ");
+  Serial.print("Target Azimuth = ");
   Serial.println(utcSunCoordinates.dAzimuth);
-  Serial.print("Zenith = ");
+  Serial.print("Target Zenith = ");
   Serial.println(utcSunCoordinates.dZenithAngle);
 
   double diffAzimuth = (utcSunCoordinates.dAzimuth - utcCurrentPosition.dAzimuth); // Difference between the target and current position
@@ -461,7 +482,7 @@ void beginTracking()
   Serial.print("Zenith Difference = ");
   Serial.println(diffZenith);
 
-  /* Perform Azimuth Tracking */
+  /* Perform Zenith Tracking */
   if (utcSunCoordinates.dZenithAngle >= 0 && utcSunCoordinates.dZenithAngle <= 90.0) // Tracking hours and within the limit
   {
       if (diffZenith < 0) // Move Counter Clockwise
@@ -473,7 +494,7 @@ void beginTracking()
         move_zenith("CW", diffZenith);
       }
 
-    /* Perform Zenith Tracking */
+    /* Perform Azimuth Tracking */
     if (utcSunCoordinates.dAzimuth >= 0 && utcSunCoordinates.dAzimuth <= 270.0) // Tracking hours and within the limit
     {
       if (diffAzimuth < 0) // Move Counter Clockwise
