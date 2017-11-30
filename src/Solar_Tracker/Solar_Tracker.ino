@@ -124,7 +124,7 @@ void loop()
 void home_azimuth(String motor_direction) // This function will place the Azimuth stage to the home position
 {
   Serial.println("Moving Azimuth Stage to the Home Position");
-  for (int i = 0; i <= 270; i++)
+  for (int i = 0; i <= 360; i++)
   {
     Serial.print("i > ");
     Serial.print(i);
