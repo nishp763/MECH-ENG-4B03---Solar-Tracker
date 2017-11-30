@@ -116,7 +116,7 @@ void loop()
 {
   while(AzimuthErrorFlag && ZenithErrorFlag) // Error Homing Stages then get stuck in this loop and do not go further
   {
-  	Serial.println("Error in homing one of the stages");
+    Serial.println("Error in homing one of the stages");
   }
   getCurrentTime();
   Serial.print("Current Azimuth = ");
@@ -124,7 +124,7 @@ void loop()
   Serial.print("Current Zenith = ");
   Serial.println(utcCurrentPosition.dZenithAngle);
   beginTracking();
-  delay(ControlFrequency);
+  //delay(ControlFrequency);
 }
 
 void home_azimuth(String motor_direction) // This function will place the Azimuth stage to the home position
@@ -287,7 +287,7 @@ void setTime()
   Wire.write(0); // point to address of the timekeeping registers
   Wire.write(0x00); // set seconds
   Wire.write(0x00); // set minutes
-  Wire.write(0x80 | 0x23); // set hours 24 mode
+  Wire.write(0x80 | 0x10); // set hours 24 mode
   Wire.write(0x05); // day of week
   Wire.write(0x30); // date
   Wire.write(0x11); // month
