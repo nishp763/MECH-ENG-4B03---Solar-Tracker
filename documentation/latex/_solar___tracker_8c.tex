@@ -1,0 +1,474 @@
+\hypertarget{_solar___tracker_8c}{}\section{C\+:/\+Users/\+Nisarg/\+Documents/\+Engineering Level V/\+M\+E\+C\+H\+E\+NG 4\+B03 -\/ Topics in Product Development/\+Final Project/\+Software/\+M\+E\+C\+H-\/\+E\+N\+G-\/4\+B03-\/-\/-\/\+Solar-\/\+Tracker/src/\+Solar\+\_\+\+Tracker/\+Solar\+\_\+\+Tracker.c File Reference}
+\label{_solar___tracker_8c}\index{C\+:/\+Users/\+Nisarg/\+Documents/\+Engineering Level V/\+M\+E\+C\+H\+E\+N\+G 4\+B03 -\/ Topics in Product Development/\+Final Project/\+Software/\+M\+E\+C\+H-\/\+E\+N\+G-\/4\+B03-\/-\/-\/\+Solar-\/\+Tracker/src/\+Solar\+\_\+\+Tracker/\+Solar\+\_\+\+Tracker.\+c@{C\+:/\+Users/\+Nisarg/\+Documents/\+Engineering Level V/\+M\+E\+C\+H\+E\+N\+G 4\+B03 -\/ Topics in Product Development/\+Final Project/\+Software/\+M\+E\+C\+H-\/\+E\+N\+G-\/4\+B03-\/-\/-\/\+Solar-\/\+Tracker/src/\+Solar\+\_\+\+Tracker/\+Solar\+\_\+\+Tracker.\+c}}
+{\ttfamily \#include $<$Wire.\+h$>$}\newline
+\subsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structc_time}{c\+Time}
+\item 
+struct \hyperlink{structc_location}{c\+Location}
+\item 
+struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{_solar___tracker_8c_a583ea21c60da60cceb2912dc12178ebf}{Azimuth\+\_\+\+Motor\+\_\+\+Direction}~7
+\item 
+\#define \hyperlink{_solar___tracker_8c_a38dcd1285255da01b5da071b8b2aeeff}{Azimuth\+\_\+\+Motor\+\_\+\+Clock}~6
+\item 
+\#define \hyperlink{_solar___tracker_8c_a88cf7b86cbb15cdc5bb3bca7a78fe2c1}{Zenith\+\_\+\+Motor\+\_\+\+Direction}~5
+\item 
+\#define \hyperlink{_solar___tracker_8c_a21fbb7be69a314a3c4710fa9844c7df5}{Zenith\+\_\+\+Motor\+\_\+\+Clock}~4
+\item 
+\#define \hyperlink{_solar___tracker_8c_a2137264b8e9448b8280479a4e63d7564}{Azimuth\+\_\+\+Optical\+\_\+\+Sensor}~2
+\item 
+\#define \hyperlink{_solar___tracker_8c_a0f95b8d5487f86fb3db3f5ec8074ad5a}{Zenith\+\_\+\+Optical\+\_\+\+Sensor}~3
+\item 
+\#define \hyperlink{_solar___tracker_8c_a258b01b44f9c3d7480c6a64e90fb8aff}{Stepper\+\_\+\+Motor\+\_\+\+Delay}~5
+\item 
+\#define \hyperlink{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}{pi}~3.\+1415926535897932384
+\item 
+\#define \hyperlink{_solar___tracker_8c_a0a3527f8b23535fe43972fbe88c3cc0d}{two\+PI}~(2.\+0$\ast$\hyperlink{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}{pi})
+\item 
+\#define \hyperlink{_solar___tracker_8c_ac04e8abc9ccd00ddb8dda926801a9866}{rad}~(\hyperlink{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}{pi}/180.\+0)
+\item 
+\#define \hyperlink{_solar___tracker_8c_a02e624a8191baf636a62fba0cf5a19cb}{d\+Earth\+Radius}~6371.\+01
+\item 
+\#define \hyperlink{_solar___tracker_8c_ac234d9b6f95c8def10771d5d173b48b2}{d\+Astro\+Unit}~149597890
+\item 
+\#define \hyperlink{_solar___tracker_8c_a850ded1ee3ab55816a1eaf2e6787a0f7}{Normal\+Control\+Frequency}~10000
+\item 
+\#define \hyperlink{_solar___tracker_8c_a785283eb51200915645fea91cdf165c3}{Debug\+Control\+Frequency}~100
+\item 
+\#define \hyperlink{_solar___tracker_8c_a98d552acbc1d60c16b408bcfbd0e426a}{Debug\+Multiplier}~10
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{_solar___tracker_8c_a4fc01d736fe50cf5b977f755b675f11d}{setup} ()
+\item 
+void \hyperlink{_solar___tracker_8c_afe461d27b9c48d5921c00d521181f12f}{loop} ()
+\item 
+void \hyperlink{_solar___tracker_8c_a90622a242e05d0b01a3a2570a1d855c8}{home\+\_\+azimuth} (String motor\+\_\+direction)
+\item 
+void \hyperlink{_solar___tracker_8c_aefb7af3c7aa43116a98b1d65e5853321}{home\+\_\+zenith} (String motor\+\_\+direction)
+\item 
+void \hyperlink{_solar___tracker_8c_a89532584b72e7c69ff206c9d628329bd}{move\+\_\+azimuth} (String motor\+\_\+direction, double azimuth\+\_\+move\+\_\+degrees)
+\item 
+void \hyperlink{_solar___tracker_8c_a39077ad0d925535dac5b8471bc2e8bfc}{move\+\_\+zenith} (String motor\+\_\+direction, double zenith\+\_\+move\+\_\+degrees)
+\item 
+void \hyperlink{_solar___tracker_8c_afc443fe98a5312e4b6f8d5fe13baf7cb}{set\+Time} ()
+\item 
+byte \hyperlink{_solar___tracker_8c_ae1d06626126e37b8a3ce1855b61a6e3f}{convert\+H\+EX} (byte value)
+\item 
+void \hyperlink{_solar___tracker_8c_a1d0dc316e54ed2ad4eef730773fc75d9}{get\+Current\+Time} ()
+\item 
+void \hyperlink{_solar___tracker_8c_ab4c92b13590a22ddd9f77d27f0b10327}{Get\+Sun\+Pos} (struct \hyperlink{structc_time}{c\+Time} \hyperlink{_solar___tracker_8c_ad45a292fbc872444a50a76fc0995f5a8}{utc\+Time}, struct \hyperlink{structc_location}{c\+Location} \hyperlink{_solar___tracker_8c_a7098ca435fe1ca4df0cf90b3c5928aa6}{utc\+Location}, struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} $\ast$\hyperlink{_solar___tracker_8c_a7421069e55609c835deecdbd1c5baa4f}{utc\+Sun\+Coordinates})
+\item 
+void \hyperlink{_solar___tracker_8c_a8f5759b967ecc12bf24f24fbf70a08ad}{begin\+Tracking} ()
+\item 
+void \hyperlink{_solar___tracker_8c_a0f7bc2aae611faefba7c696057858aa4}{set\+Debug\+Mode} ()
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const double \hyperlink{_solar___tracker_8c_a8e9ab97e9e8b0a6498368bc24aa23942}{M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE} = 43.\+434
+\item 
+const double \hyperlink{_solar___tracker_8c_ae02aa37443feb5c22cd639da8f44a5ac}{M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE} = -\/80.\+535
+\item 
+int \hyperlink{_solar___tracker_8c_a4870c057aeaa65356c649b489fb167c8}{Control\+Frequency} = \hyperlink{_solar___tracker_8c_a850ded1ee3ab55816a1eaf2e6787a0f7}{Normal\+Control\+Frequency}
+\item 
+int \hyperlink{_solar___tracker_8c_a40587174746705895d5f71ba308fc02d}{Mode} = 0
+\item 
+int \hyperlink{_solar___tracker_8c_a83d87dede6ab5d8d232fb74ad4c5241f}{Azimuth\+Error\+Flag} = 1
+\item 
+int \hyperlink{_solar___tracker_8c_a0480279e709c436b289ccbb28cdb10e2}{Zenith\+Error\+Flag} = 1
+\item 
+struct \hyperlink{structc_time}{c\+Time} \hyperlink{_solar___tracker_8c_ad45a292fbc872444a50a76fc0995f5a8}{utc\+Time}
+\item 
+struct \hyperlink{structc_location}{c\+Location} \hyperlink{_solar___tracker_8c_a7098ca435fe1ca4df0cf90b3c5928aa6}{utc\+Location}
+\item 
+struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} \hyperlink{_solar___tracker_8c_a7421069e55609c835deecdbd1c5baa4f}{utc\+Sun\+Coordinates}
+\item 
+struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} \hyperlink{_solar___tracker_8c_a95ee807049a0d6abd09b74a8cd8fcbd6}{utc\+Current\+Position}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\mbox{\Hypertarget{_solar___tracker_8c_a38dcd1285255da01b5da071b8b2aeeff}\label{_solar___tracker_8c_a38dcd1285255da01b5da071b8b2aeeff}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Azimuth\+\_\+\+Motor\+\_\+\+Clock@{Azimuth\+\_\+\+Motor\+\_\+\+Clock}}
+\index{Azimuth\+\_\+\+Motor\+\_\+\+Clock@{Azimuth\+\_\+\+Motor\+\_\+\+Clock}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Azimuth\+\_\+\+Motor\+\_\+\+Clock}{Azimuth\_Motor\_Clock}}
+{\footnotesize\ttfamily \#define Azimuth\+\_\+\+Motor\+\_\+\+Clock~6}
+
+
+
+Definition at line 13 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a583ea21c60da60cceb2912dc12178ebf}\label{_solar___tracker_8c_a583ea21c60da60cceb2912dc12178ebf}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Azimuth\+\_\+\+Motor\+\_\+\+Direction@{Azimuth\+\_\+\+Motor\+\_\+\+Direction}}
+\index{Azimuth\+\_\+\+Motor\+\_\+\+Direction@{Azimuth\+\_\+\+Motor\+\_\+\+Direction}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Azimuth\+\_\+\+Motor\+\_\+\+Direction}{Azimuth\_Motor\_Direction}}
+{\footnotesize\ttfamily \#define Azimuth\+\_\+\+Motor\+\_\+\+Direction~7}
+
+
+
+Definition at line 12 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a2137264b8e9448b8280479a4e63d7564}\label{_solar___tracker_8c_a2137264b8e9448b8280479a4e63d7564}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Azimuth\+\_\+\+Optical\+\_\+\+Sensor@{Azimuth\+\_\+\+Optical\+\_\+\+Sensor}}
+\index{Azimuth\+\_\+\+Optical\+\_\+\+Sensor@{Azimuth\+\_\+\+Optical\+\_\+\+Sensor}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Azimuth\+\_\+\+Optical\+\_\+\+Sensor}{Azimuth\_Optical\_Sensor}}
+{\footnotesize\ttfamily \#define Azimuth\+\_\+\+Optical\+\_\+\+Sensor~2}
+
+
+
+Definition at line 16 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ac234d9b6f95c8def10771d5d173b48b2}\label{_solar___tracker_8c_ac234d9b6f95c8def10771d5d173b48b2}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!d\+Astro\+Unit@{d\+Astro\+Unit}}
+\index{d\+Astro\+Unit@{d\+Astro\+Unit}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{d\+Astro\+Unit}{dAstroUnit}}
+{\footnotesize\ttfamily \#define d\+Astro\+Unit~149597890}
+
+
+
+Definition at line 24 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a02e624a8191baf636a62fba0cf5a19cb}\label{_solar___tracker_8c_a02e624a8191baf636a62fba0cf5a19cb}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!d\+Earth\+Radius@{d\+Earth\+Radius}}
+\index{d\+Earth\+Radius@{d\+Earth\+Radius}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{d\+Earth\+Radius}{dEarthRadius}}
+{\footnotesize\ttfamily \#define d\+Earth\+Radius~6371.\+01}
+
+
+
+Definition at line 23 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a785283eb51200915645fea91cdf165c3}\label{_solar___tracker_8c_a785283eb51200915645fea91cdf165c3}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Debug\+Control\+Frequency@{Debug\+Control\+Frequency}}
+\index{Debug\+Control\+Frequency@{Debug\+Control\+Frequency}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Debug\+Control\+Frequency}{DebugControlFrequency}}
+{\footnotesize\ttfamily \#define Debug\+Control\+Frequency~100}
+
+
+
+Definition at line 27 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a98d552acbc1d60c16b408bcfbd0e426a}\label{_solar___tracker_8c_a98d552acbc1d60c16b408bcfbd0e426a}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Debug\+Multiplier@{Debug\+Multiplier}}
+\index{Debug\+Multiplier@{Debug\+Multiplier}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Debug\+Multiplier}{DebugMultiplier}}
+{\footnotesize\ttfamily \#define Debug\+Multiplier~10}
+
+
+
+Definition at line 28 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a850ded1ee3ab55816a1eaf2e6787a0f7}\label{_solar___tracker_8c_a850ded1ee3ab55816a1eaf2e6787a0f7}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Normal\+Control\+Frequency@{Normal\+Control\+Frequency}}
+\index{Normal\+Control\+Frequency@{Normal\+Control\+Frequency}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Normal\+Control\+Frequency}{NormalControlFrequency}}
+{\footnotesize\ttfamily \#define Normal\+Control\+Frequency~10000}
+
+
+
+Definition at line 26 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}\label{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!pi@{pi}}
+\index{pi@{pi}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{pi}{pi}}
+{\footnotesize\ttfamily \#define pi~3.\+1415926535897932384}
+
+
+
+Definition at line 20 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ac04e8abc9ccd00ddb8dda926801a9866}\label{_solar___tracker_8c_ac04e8abc9ccd00ddb8dda926801a9866}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!rad@{rad}}
+\index{rad@{rad}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{rad}{rad}}
+{\footnotesize\ttfamily \#define rad~(\hyperlink{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}{pi}/180.\+0)}
+
+
+
+Definition at line 22 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a258b01b44f9c3d7480c6a64e90fb8aff}\label{_solar___tracker_8c_a258b01b44f9c3d7480c6a64e90fb8aff}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Stepper\+\_\+\+Motor\+\_\+\+Delay@{Stepper\+\_\+\+Motor\+\_\+\+Delay}}
+\index{Stepper\+\_\+\+Motor\+\_\+\+Delay@{Stepper\+\_\+\+Motor\+\_\+\+Delay}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Stepper\+\_\+\+Motor\+\_\+\+Delay}{Stepper\_Motor\_Delay}}
+{\footnotesize\ttfamily \#define Stepper\+\_\+\+Motor\+\_\+\+Delay~5}
+
+
+
+Definition at line 18 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a0a3527f8b23535fe43972fbe88c3cc0d}\label{_solar___tracker_8c_a0a3527f8b23535fe43972fbe88c3cc0d}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!two\+PI@{two\+PI}}
+\index{two\+PI@{two\+PI}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{two\+PI}{twoPI}}
+{\footnotesize\ttfamily \#define two\+PI~(2.\+0$\ast$\hyperlink{_solar___tracker_8c_a1daf785e3f68d293c7caa1c756d5cb74}{pi})}
+
+
+
+Definition at line 21 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a21fbb7be69a314a3c4710fa9844c7df5}\label{_solar___tracker_8c_a21fbb7be69a314a3c4710fa9844c7df5}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Zenith\+\_\+\+Motor\+\_\+\+Clock@{Zenith\+\_\+\+Motor\+\_\+\+Clock}}
+\index{Zenith\+\_\+\+Motor\+\_\+\+Clock@{Zenith\+\_\+\+Motor\+\_\+\+Clock}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Zenith\+\_\+\+Motor\+\_\+\+Clock}{Zenith\_Motor\_Clock}}
+{\footnotesize\ttfamily \#define Zenith\+\_\+\+Motor\+\_\+\+Clock~4}
+
+
+
+Definition at line 15 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a88cf7b86cbb15cdc5bb3bca7a78fe2c1}\label{_solar___tracker_8c_a88cf7b86cbb15cdc5bb3bca7a78fe2c1}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Zenith\+\_\+\+Motor\+\_\+\+Direction@{Zenith\+\_\+\+Motor\+\_\+\+Direction}}
+\index{Zenith\+\_\+\+Motor\+\_\+\+Direction@{Zenith\+\_\+\+Motor\+\_\+\+Direction}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Zenith\+\_\+\+Motor\+\_\+\+Direction}{Zenith\_Motor\_Direction}}
+{\footnotesize\ttfamily \#define Zenith\+\_\+\+Motor\+\_\+\+Direction~5}
+
+
+
+Definition at line 14 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a0f95b8d5487f86fb3db3f5ec8074ad5a}\label{_solar___tracker_8c_a0f95b8d5487f86fb3db3f5ec8074ad5a}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Zenith\+\_\+\+Optical\+\_\+\+Sensor@{Zenith\+\_\+\+Optical\+\_\+\+Sensor}}
+\index{Zenith\+\_\+\+Optical\+\_\+\+Sensor@{Zenith\+\_\+\+Optical\+\_\+\+Sensor}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Zenith\+\_\+\+Optical\+\_\+\+Sensor}{Zenith\_Optical\_Sensor}}
+{\footnotesize\ttfamily \#define Zenith\+\_\+\+Optical\+\_\+\+Sensor~3}
+
+
+
+Definition at line 17 of file Solar\+\_\+\+Tracker.\+c.
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{_solar___tracker_8c_a8f5759b967ecc12bf24f24fbf70a08ad}\label{_solar___tracker_8c_a8f5759b967ecc12bf24f24fbf70a08ad}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!begin\+Tracking@{begin\+Tracking}}
+\index{begin\+Tracking@{begin\+Tracking}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{begin\+Tracking()}{beginTracking()}}
+{\footnotesize\ttfamily void begin\+Tracking (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 467 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ae1d06626126e37b8a3ce1855b61a6e3f}\label{_solar___tracker_8c_ae1d06626126e37b8a3ce1855b61a6e3f}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!convert\+H\+EX@{convert\+H\+EX}}
+\index{convert\+H\+EX@{convert\+H\+EX}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{convert\+H\+E\+X()}{convertHEX()}}
+{\footnotesize\ttfamily byte convert\+H\+EX (\begin{DoxyParamCaption}\item[{byte}]{value }\end{DoxyParamCaption})}
+
+
+
+Definition at line 299 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a1d0dc316e54ed2ad4eef730773fc75d9}\label{_solar___tracker_8c_a1d0dc316e54ed2ad4eef730773fc75d9}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!get\+Current\+Time@{get\+Current\+Time}}
+\index{get\+Current\+Time@{get\+Current\+Time}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{get\+Current\+Time()}{getCurrentTime()}}
+{\footnotesize\ttfamily void get\+Current\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 305 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ab4c92b13590a22ddd9f77d27f0b10327}\label{_solar___tracker_8c_ab4c92b13590a22ddd9f77d27f0b10327}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Get\+Sun\+Pos@{Get\+Sun\+Pos}}
+\index{Get\+Sun\+Pos@{Get\+Sun\+Pos}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Get\+Sun\+Pos()}{GetSunPos()}}
+{\footnotesize\ttfamily void Get\+Sun\+Pos (\begin{DoxyParamCaption}\item[{struct \hyperlink{structc_time}{c\+Time}}]{utc\+Time,  }\item[{struct \hyperlink{structc_location}{c\+Location}}]{utc\+Location,  }\item[{struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} $\ast$}]{utc\+Sun\+Coordinates }\end{DoxyParamCaption})}
+
+
+
+Definition at line 372 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a90622a242e05d0b01a3a2570a1d855c8}\label{_solar___tracker_8c_a90622a242e05d0b01a3a2570a1d855c8}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!home\+\_\+azimuth@{home\+\_\+azimuth}}
+\index{home\+\_\+azimuth@{home\+\_\+azimuth}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{home\+\_\+azimuth()}{home\_azimuth()}}
+{\footnotesize\ttfamily void home\+\_\+azimuth (\begin{DoxyParamCaption}\item[{String}]{motor\+\_\+direction }\end{DoxyParamCaption})}
+
+
+
+Definition at line 130 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_aefb7af3c7aa43116a98b1d65e5853321}\label{_solar___tracker_8c_aefb7af3c7aa43116a98b1d65e5853321}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!home\+\_\+zenith@{home\+\_\+zenith}}
+\index{home\+\_\+zenith@{home\+\_\+zenith}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{home\+\_\+zenith()}{home\_zenith()}}
+{\footnotesize\ttfamily void home\+\_\+zenith (\begin{DoxyParamCaption}\item[{String}]{motor\+\_\+direction }\end{DoxyParamCaption})}
+
+
+
+Definition at line 160 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_afe461d27b9c48d5921c00d521181f12f}\label{_solar___tracker_8c_afe461d27b9c48d5921c00d521181f12f}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!loop@{loop}}
+\index{loop@{loop}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily void loop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 115 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a89532584b72e7c69ff206c9d628329bd}\label{_solar___tracker_8c_a89532584b72e7c69ff206c9d628329bd}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!move\+\_\+azimuth@{move\+\_\+azimuth}}
+\index{move\+\_\+azimuth@{move\+\_\+azimuth}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{move\+\_\+azimuth()}{move\_azimuth()}}
+{\footnotesize\ttfamily void move\+\_\+azimuth (\begin{DoxyParamCaption}\item[{String}]{motor\+\_\+direction,  }\item[{double}]{azimuth\+\_\+move\+\_\+degrees }\end{DoxyParamCaption})}
+
+
+
+Definition at line 190 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a39077ad0d925535dac5b8471bc2e8bfc}\label{_solar___tracker_8c_a39077ad0d925535dac5b8471bc2e8bfc}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!move\+\_\+zenith@{move\+\_\+zenith}}
+\index{move\+\_\+zenith@{move\+\_\+zenith}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{move\+\_\+zenith()}{move\_zenith()}}
+{\footnotesize\ttfamily void move\+\_\+zenith (\begin{DoxyParamCaption}\item[{String}]{motor\+\_\+direction,  }\item[{double}]{zenith\+\_\+move\+\_\+degrees }\end{DoxyParamCaption})}
+
+
+
+Definition at line 236 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a0f7bc2aae611faefba7c696057858aa4}\label{_solar___tracker_8c_a0f7bc2aae611faefba7c696057858aa4}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!set\+Debug\+Mode@{set\+Debug\+Mode}}
+\index{set\+Debug\+Mode@{set\+Debug\+Mode}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{set\+Debug\+Mode()}{setDebugMode()}}
+{\footnotesize\ttfamily void set\+Debug\+Mode (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 519 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_afc443fe98a5312e4b6f8d5fe13baf7cb}\label{_solar___tracker_8c_afc443fe98a5312e4b6f8d5fe13baf7cb}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!set\+Time@{set\+Time}}
+\index{set\+Time@{set\+Time}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{set\+Time()}{setTime()}}
+{\footnotesize\ttfamily void set\+Time (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 283 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a4fc01d736fe50cf5b977f755b675f11d}\label{_solar___tracker_8c_a4fc01d736fe50cf5b977f755b675f11d}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!setup@{setup}}
+\index{setup@{setup}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily void setup (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line 67 of file Solar\+\_\+\+Tracker.\+c.
+
+
+
+\subsection{Variable Documentation}
+\mbox{\Hypertarget{_solar___tracker_8c_a83d87dede6ab5d8d232fb74ad4c5241f}\label{_solar___tracker_8c_a83d87dede6ab5d8d232fb74ad4c5241f}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Azimuth\+Error\+Flag@{Azimuth\+Error\+Flag}}
+\index{Azimuth\+Error\+Flag@{Azimuth\+Error\+Flag}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Azimuth\+Error\+Flag}{AzimuthErrorFlag}}
+{\footnotesize\ttfamily int Azimuth\+Error\+Flag = 1}
+
+
+
+Definition at line 36 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a4870c057aeaa65356c649b489fb167c8}\label{_solar___tracker_8c_a4870c057aeaa65356c649b489fb167c8}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Control\+Frequency@{Control\+Frequency}}
+\index{Control\+Frequency@{Control\+Frequency}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Control\+Frequency}{ControlFrequency}}
+{\footnotesize\ttfamily int Control\+Frequency = \hyperlink{_solar___tracker_8c_a850ded1ee3ab55816a1eaf2e6787a0f7}{Normal\+Control\+Frequency}}
+
+
+
+Definition at line 34 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a8e9ab97e9e8b0a6498368bc24aa23942}\label{_solar___tracker_8c_a8e9ab97e9e8b0a6498368bc24aa23942}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE@{M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE}}
+\index{M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE@{M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE}{MCMASTERLATITUDE}}
+{\footnotesize\ttfamily const double M\+C\+M\+A\+S\+T\+E\+R\+L\+A\+T\+I\+T\+U\+DE = 43.\+434}
+
+
+
+Definition at line 31 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ae02aa37443feb5c22cd639da8f44a5ac}\label{_solar___tracker_8c_ae02aa37443feb5c22cd639da8f44a5ac}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE@{M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE}}
+\index{M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE@{M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE}{MCMASTERLONGITUDE}}
+{\footnotesize\ttfamily const double M\+C\+M\+A\+S\+T\+E\+R\+L\+O\+N\+G\+I\+T\+U\+DE = -\/80.\+535}
+
+
+
+Definition at line 32 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a40587174746705895d5f71ba308fc02d}\label{_solar___tracker_8c_a40587174746705895d5f71ba308fc02d}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Mode@{Mode}}
+\index{Mode@{Mode}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Mode}{Mode}}
+{\footnotesize\ttfamily int Mode = 0}
+
+
+
+Definition at line 35 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a95ee807049a0d6abd09b74a8cd8fcbd6}\label{_solar___tracker_8c_a95ee807049a0d6abd09b74a8cd8fcbd6}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!utc\+Current\+Position@{utc\+Current\+Position}}
+\index{utc\+Current\+Position@{utc\+Current\+Position}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{utc\+Current\+Position}{utcCurrentPosition}}
+{\footnotesize\ttfamily struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} utc\+Current\+Position}
+
+
+
+Definition at line 65 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a7098ca435fe1ca4df0cf90b3c5928aa6}\label{_solar___tracker_8c_a7098ca435fe1ca4df0cf90b3c5928aa6}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!utc\+Location@{utc\+Location}}
+\index{utc\+Location@{utc\+Location}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{utc\+Location}{utcLocation}}
+{\footnotesize\ttfamily struct \hyperlink{structc_location}{c\+Location} utc\+Location}
+
+
+
+Definition at line 63 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a7421069e55609c835deecdbd1c5baa4f}\label{_solar___tracker_8c_a7421069e55609c835deecdbd1c5baa4f}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!utc\+Sun\+Coordinates@{utc\+Sun\+Coordinates}}
+\index{utc\+Sun\+Coordinates@{utc\+Sun\+Coordinates}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{utc\+Sun\+Coordinates}{utcSunCoordinates}}
+{\footnotesize\ttfamily struct \hyperlink{structc_sun_coordinates}{c\+Sun\+Coordinates} utc\+Sun\+Coordinates}
+
+
+
+Definition at line 64 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_ad45a292fbc872444a50a76fc0995f5a8}\label{_solar___tracker_8c_ad45a292fbc872444a50a76fc0995f5a8}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!utc\+Time@{utc\+Time}}
+\index{utc\+Time@{utc\+Time}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{utc\+Time}{utcTime}}
+{\footnotesize\ttfamily struct \hyperlink{structc_time}{c\+Time} utc\+Time}
+
+
+
+Definition at line 62 of file Solar\+\_\+\+Tracker.\+c.
+
+\mbox{\Hypertarget{_solar___tracker_8c_a0480279e709c436b289ccbb28cdb10e2}\label{_solar___tracker_8c_a0480279e709c436b289ccbb28cdb10e2}} 
+\index{Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}!Zenith\+Error\+Flag@{Zenith\+Error\+Flag}}
+\index{Zenith\+Error\+Flag@{Zenith\+Error\+Flag}!Solar\+\_\+\+Tracker.\+c@{Solar\+\_\+\+Tracker.\+c}}
+\subsubsection{\texorpdfstring{Zenith\+Error\+Flag}{ZenithErrorFlag}}
+{\footnotesize\ttfamily int Zenith\+Error\+Flag = 1}
+
+
+
+Definition at line 37 of file Solar\+\_\+\+Tracker.\+c.
+
